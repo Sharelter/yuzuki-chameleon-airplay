@@ -6,9 +6,9 @@
 
 ![Yuzuki Chameleon 实机播放 AirPlay 音乐时的 HDMI 画面](docs/images/now-playing.jpg)
 
-![Yuzuki Chameleon 开发板实物照片](https://raw.githubusercontent.com/weiyongwill/H616/master/Bitmap/main.jpeg)
+![Yuzuki Chameleon 开发板实物照片](https://raw.githubusercontent.com/YuzukiHD/YuzukiChameleon/master/Bitmap/main.jpeg)
 
-开发板照片来源为 [weiyongwill/H616](https://github.com/weiyongwill/H616/blob/master/Bitmap/main.jpeg)。
+开发板照片来源为 [YuzukiHD/YuzukiChameleon](https://github.com/YuzukiHD/YuzukiChameleon/blob/master/Bitmap/main.jpeg)。
 
 ## 适用环境
 

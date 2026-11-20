@@ -6,9 +6,9 @@ Turn a Yuzuki Chameleon (Allwinner H616) into an AirPlay 1 audio receiver. Choos
 
 ![Photo of the Yuzuki Chameleon now-playing display during AirPlay playback](docs/images/now-playing.jpg)
 
-![Yuzuki Chameleon development board](https://raw.githubusercontent.com/weiyongwill/H616/master/Bitmap/main.jpeg)
+![Yuzuki Chameleon development board](https://raw.githubusercontent.com/YuzukiHD/YuzukiChameleon/master/Bitmap/main.jpeg)
 
-Board photo from [weiyongwill/H616](https://github.com/weiyongwill/H616/blob/master/Bitmap/main.jpeg).
+Board photo from [YuzukiHD/YuzukiChameleon](https://github.com/YuzukiHD/YuzukiChameleon/blob/master/Bitmap/main.jpeg).
 
 ## Requirements
 
