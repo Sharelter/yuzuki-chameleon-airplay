@@ -6,6 +6,10 @@ Turn a Yuzuki Chameleon (Allwinner H616) into an AirPlay 1 audio receiver. Choos
 
 ![Photo of the Yuzuki Chameleon now-playing display during AirPlay playback](docs/images/now-playing.jpg)
 
+![Yuzuki Chameleon development board](https://raw.githubusercontent.com/weiyongwill/H616/master/Bitmap/main.jpeg)
+
+Board photo from [weiyongwill/H616](https://github.com/weiyongwill/H616/blob/master/Bitmap/main.jpeg).
+
 ## Requirements
 
 - A booted [Yuzuki Chameleon](https://github.com/YuzukiHD/YuzukiChameleon) running Tina Linux with `/etc/rc.common` and the vendor ALSA drivers. The original setup used `tina_h616-yuzukichameleon_uart0` with Linux 4.9.170.

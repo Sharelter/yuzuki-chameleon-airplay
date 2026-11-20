@@ -6,6 +6,10 @@
 
 ![Yuzuki Chameleon 实机播放 AirPlay 音乐时的 HDMI 画面](docs/images/now-playing.jpg)
 
+![Yuzuki Chameleon 开发板实物照片](https://raw.githubusercontent.com/weiyongwill/H616/master/Bitmap/main.jpeg)
+
+开发板照片来源为 [weiyongwill/H616](https://github.com/weiyongwill/H616/blob/master/Bitmap/main.jpeg)。
+
 ## 适用环境
 
 - 已启动的 [Yuzuki Chameleon](https://github.com/YuzukiHD/YuzukiChameleon)，运行带 `/etc/rc.common` 和厂商 ALSA 驱动的 Tina Linux 镜像。本项目使用的镜像是 `tina_h616-yuzukichameleon_uart0`，内核版本为 4.9.170。
