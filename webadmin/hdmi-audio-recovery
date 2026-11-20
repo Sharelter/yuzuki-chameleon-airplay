@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This H616 BSP leaves its AHUB HDMI stream in XRUN after some HDMI hot-plug
+# events. Recover only when HDMI is the selected AirPlay destination.
+while :; do
+    if [ -f /etc/yuzuki-admin.conf ] && grep -q '^audio=hdmi$' /etc/yuzuki-admin.conf && \
+       grep -q '^state: XRUN$' /proc/asound/card2/pcm0p/sub0/status 2>/dev/null; then
+        logger -t hdmi-audio-recovery 'HDMI stream XRUN after hot-plug; restarting AirPlay'
+        amixer -q -c 2 set 'I2S1 Src Select' 'APBIF_TXDIF0'
+        amixer -q -c 2 set I2S1OUT on
+        killall shairport-sync 2>/dev/null
+        # airplay_boot's watchdog starts a fresh receiver after five seconds.
+        sleep 8
+    else
+        sleep 2
+    fi
+done

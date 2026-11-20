@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+
+START=91
+STOP=9
+
+start() {
+    mkdir -p /var/run
+    if [ -f /var/run/yuzuki-admin.pid ]; then
+        oldpid="$(cat /var/run/yuzuki-admin.pid)"
+        if [ -n "$oldpid" ] && kill -0 "$oldpid" 2>/dev/null; then
+            return 0
+        fi
+        rm -f /var/run/yuzuki-admin.pid
+    fi
+    /sbin/start-stop-daemon -S -b -m -p /var/run/yuzuki-admin.pid \
+        -x /usr/bin/yuzuki-admin >/tmp/yuzuki-admin.log 2>&1
+}
+
+stop() {
+    [ -f /var/run/yuzuki-admin.pid ] || return 0
+    /sbin/start-stop-daemon -K -p /var/run/yuzuki-admin.pid 2>/dev/null
+    rm -f /var/run/yuzuki-admin.pid
+}

@@ -1,0 +1,41 @@
+# Builds, local assets and SDK downloads
+/build/
+/dist/
+/assets/
+/sdk/
+*.o
+*.core
+
+# Private bring-up material and separate experiments
+/AIRPLAY_DEBUG_JOURNAL.md
+/armbian-port-*/
+/backup/
+/board/boot-backup/
+/board/*.bin
+/board/shairport-sync.init
+*.[Hh][Ee][Ii][Cc]
+*.[Hh][Ee][Ii][Ff]
+*.img
+*.img.*
+*.zip
+*.tar
+*.tar.*
+*.log
+*.pcap
+*.pcapng
+*.wav
+
+# Device credentials and workspace metadata
+/.agents/
+/.aws/
+/.codex/
+.env
+.env.*
+*.pem
+*.key
+*.ppk
+id_rsa*
+id_ed25519*
+authorized_keys
+known_hosts*
+wpa_supplicant*.conf

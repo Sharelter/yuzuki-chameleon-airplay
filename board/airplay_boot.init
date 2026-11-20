@@ -1,0 +1,81 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=10
+
+start() {
+    sleep 2
+
+    mkdir -p /data/vendor/wifi /system/vendor/etc/firmware /etc/wifi/sockets /var/run
+    for firmware in boot_xr829.bin etf_xr829.bin fw_xr829.bin fw_xr829_bt.bin sdd_xr829.bin; do
+        ln -sf "/etc/firmware/$firmware" "/system/vendor/etc/firmware/$firmware"
+    done
+
+    grep -q '^xr829 ' /proc/modules || insmod /lib/modules/4.9.170/xr829.ko
+
+    count=0
+    while [ ! -d /sys/class/net/wlan0 ] && [ "$count" -lt 50 ]; do
+        sleep 1
+        count=$((count + 1))
+    done
+
+    ip link set wlan0 up 2>/dev/null
+    if ! pidof wpa_supplicant >/dev/null; then
+        wpa_supplicant -B -iwlan0 -Dnl80211 \
+            -c/etc/wifi/wpa_supplicant.conf \
+            -I/etc/wifi/wpa_supplicant_overlay.conf \
+            -O/etc/wifi/sockets
+    fi
+    if ! pidof udhcpc >/dev/null; then
+        udhcpc -i wlan0 -S -t 5 -T 7 -b -q &
+    fi
+
+    if [ -x /usr/bin/dropbearkey ] && [ -x /usr/sbin/dropbear ]; then
+        mkdir -p /etc/dropbear /root/.ssh
+        if [ ! -f /etc/dropbear/dropbear_ed25519_host_key ]; then
+            /usr/bin/dropbearkey -t ed25519 -f /etc/dropbear/dropbear_ed25519_host_key
+            chmod 600 /etc/dropbear/dropbear_ed25519_host_key
+        fi
+        if ! pidof dropbear >/dev/null; then
+            /usr/sbin/dropbear -s -p 22 -r /etc/dropbear/dropbear_ed25519_host_key
+        fi
+    fi
+
+    if [ -f /etc/yuzuki-admin.conf ] && grep -q '^audio=hdmi$' /etc/yuzuki-admin.conf; then
+        # H616 HDMI is fed through AHUB I2S1 / Media Stream (card 2, device 0).
+        amixer -q -c 2 set 'I2S1 Src Select' 'APBIF_TXDIF0'
+        amixer -q -c 2 set I2S1OUT on
+    else
+        amixer -q -c 2 set I2S1OUT off
+        amixer -q -c 0 set LINEOUT on
+        amixer -q -c 0 set 'Left Output Mixer DACL' on
+        amixer -q -c 0 set 'Right Output Mixer DACR' on
+        amixer -q -c 0 set 'LINEOUT volume' 31
+    fi
+
+    if [ ! -f /var/run/shairport-watchdog.pid ] || \
+       ! kill -0 "$(cat /var/run/shairport-watchdog.pid)" 2>/dev/null; then
+        (
+            # tinysvcmdns snapshots the available interfaces when Shairport
+            # starts. Wait for DHCP so it advertises a complete A/SRV record.
+            while ! ip -4 addr show wlan0 2>/dev/null | grep -q 'inet '; do
+                sleep 2
+            done
+
+            export ALSA_CONFIG_PATH=/usr/share/alsa/alsa.conf
+            while :; do
+                /usr/bin/shairport-sync -c /etc/shairport-sync.conf
+                sleep 5
+            done
+        ) &
+        echo $! >/var/run/shairport-watchdog.pid
+    fi
+}
+
+stop() {
+    if [ -f /var/run/shairport-watchdog.pid ]; then
+        kill "$(cat /var/run/shairport-watchdog.pid)" 2>/dev/null
+        rm -f /var/run/shairport-watchdog.pid
+    fi
+    killall shairport-sync 2>/dev/null
+}

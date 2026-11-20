@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+
+START=92
+STOP=8
+
+start() {
+    mkdir -p /var/run
+    if [ -f /var/run/hdmi-audio-recovery.pid ]; then
+        oldpid="$(cat /var/run/hdmi-audio-recovery.pid)"
+        if [ -n "$oldpid" ] && kill -0 "$oldpid" 2>/dev/null; then
+            return 0
+        fi
+        rm -f /var/run/hdmi-audio-recovery.pid
+    fi
+    /sbin/start-stop-daemon -S -b -m -p /var/run/hdmi-audio-recovery.pid \
+        -x /usr/bin/hdmi-audio-recovery >/tmp/hdmi-audio-recovery.log 2>&1
+}
+
+stop() {
+    [ -f /var/run/hdmi-audio-recovery.pid ] || return 0
+    /sbin/start-stop-daemon -K -p /var/run/hdmi-audio-recovery.pid 2>/dev/null
+    rm -f /var/run/hdmi-audio-recovery.pid
+}

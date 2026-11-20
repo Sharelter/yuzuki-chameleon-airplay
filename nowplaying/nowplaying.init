@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+
+START=89
+STOP=11
+
+start() {
+    mkdir -p /tmp /var/run
+    if [ -f /etc/yuzuki-admin.conf ] && grep -q '^display=off$' /etc/yuzuki-admin.conf; then
+        return 0
+    fi
+    if [ -f /var/run/nowplaying.pid ]; then
+        oldpid="$(cat /var/run/nowplaying.pid)"
+        if [ -n "$oldpid" ] && kill -0 "$oldpid" 2>/dev/null; then
+            return 0
+        fi
+        rm -f /var/run/nowplaying.pid
+    fi
+    /usr/bin/nowplaying >/tmp/nowplaying.log 2>&1 &
+    echo $! >/var/run/nowplaying.pid
+}
+
+stop() {
+    [ -f /var/run/nowplaying.pid ] || return 0
+    oldpid="$(cat /var/run/nowplaying.pid)"
+    if [ -n "$oldpid" ]; then
+        kill "$oldpid" 2>/dev/null
+        count=0
+        while kill -0 "$oldpid" 2>/dev/null && [ "$count" -lt 5 ]; do
+            sleep 1
+            count=$((count + 1))
+        done
+        if kill -0 "$oldpid" 2>/dev/null; then
+            kill -9 "$oldpid" 2>/dev/null
+        fi
+    fi
+    rm -f /var/run/nowplaying.pid
+}
